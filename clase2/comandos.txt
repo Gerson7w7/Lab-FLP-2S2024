@@ -1,0 +1,5 @@
+compilar programa: gfortran -o miPrograma ./miPrograma.f90
+
+ejecutar programa: ./miPrograma
+
+listar archivos: ls  
