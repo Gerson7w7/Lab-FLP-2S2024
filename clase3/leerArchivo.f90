@@ -1,4 +1,5 @@
 module leerArchivo 
+    use GameModule
     implicit none
     
     contains
@@ -32,8 +33,7 @@ module leerArchivo
             read(unit_num, '(A)', iostat=ios) line
             if (ios /= 0) exit
             if (i <= max_lineas) then
-                print *, line
-                contenido(i) = line
+                contenido(i) = trim(line)
                 i = i + 1
             end if
         end do 
@@ -67,12 +67,12 @@ module leerArchivo
         do i = 1, len_line
             if (line(i:i) == delimitador) then
                 if (column == 1) then
-                    nombre = buffer
+                    nombre = trim(buffer)
                 else if (column == 2) then
                     read(buffer, *) puntuacion
-                else if (column == 3) then
-                    genero = buffer
                 end if
+                column = column + 1
+                buffer = ''
             else 
                 buffer = trim(buffer) // line(i:i)
             end if
@@ -94,6 +94,21 @@ module leerArchivo
         else
             allocate(juegos(1))
         end if 
+        juegos(n+1) = j
     end subroutine separar
+
+    ! función para extender el array de juegos
+    subroutine extendedArray(juegos)
+        implicit none 
+        type(Juego), allocatable, intent(inout) :: juegos(:)
+        type(Juego), allocatable :: temp(:)
+        integer :: n 
+
+        n = size(juegos)
+        allocate(temp(n+1))
+        temp(1:n) = juegos
+        deallocate(juegos)
+        juegos = temp
+    end subroutine extendedArray
 
 end module leerArchivo
