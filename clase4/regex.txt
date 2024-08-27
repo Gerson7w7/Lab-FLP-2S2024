@@ -1,0 +1,13 @@
+
+regex para reconocer correos electrónicos: 
+patrón: [a-zA-Z0-9]+@[a-z]+\.[a-z\.?]+ 
+
+lexema: gersonquiroa18@gmail.com
+
+
+regex para recomendar contraseñas: 
+patrón: [(a-zA-Z)+(0-9)+(\W)+]{10:}
+
+lexema: 1234 NO PASA
+lexema: gerson123 NOPASA
+lexema: gerson123@ PASA!!
