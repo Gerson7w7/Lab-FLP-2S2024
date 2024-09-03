@@ -1,0 +1,28 @@
+-- creo una base de datos llamada dbEjemplo
+CrearBD dbEjemplo = nueva CrearBD();
+
+-- creo una colección llamada collection en la bd de dbEjemplo
+CrearColeccion collection = nueva CrearColeccion("dbEjemplo");
+
+/*
+Insertamos un objeto a la colección llamada 
+collection en este caso añadimos un autor y 
+el nombre de su libro.
+*/
+InsertarUnico collection = nueva InsertarUnico("dbEjemplo",
+    {
+        "nombre":"Obra Literaria",
+        "autor":"Jorge Luis",
+        "edad": 50
+    } @
+);
+
+/*
+Elinamos la base de datos 
+que tiene por nombre dbEjemplo 
+*/
+&
+EliminarBD elimina = nueva EliminarBD("dbEjemplo");
+%
+EliminarBD elimina = nueva CrearBD("dbEjemplo");                
+=;

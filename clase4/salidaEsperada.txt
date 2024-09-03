@@ -1,0 +1,11 @@
+
+========================== TRADUCCIÓN =======================
+use('dbEjemplo');
+dbEjemplo.createCollection('collection');
+dbEjemplo.collection.insertOne(
+    {
+        "nombre":"Obra Literaria",
+        "autor":"Jorge Luis"
+    }
+);
+dbEjemplo.dropDatabase();
