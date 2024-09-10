@@ -33,7 +33,8 @@ module ErrorModule
     subroutine addError(errors, mensaje, buffer_, tipo, linea, columna)
         implicit none 
         type(Error), allocatable, intent(inout) :: errors(:)
-        character(len=*), intent(inout) :: buffer_, tipo, mensaje
+        character(len=*), intent(inout) :: buffer_ 
+        character(len=*), intent(in) :: tipo, mensaje
         integer, intent(in) :: linea, columna
         type(Error) :: e
         integer :: n

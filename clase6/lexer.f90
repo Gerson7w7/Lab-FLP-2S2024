@@ -1,4 +1,5 @@
 program main_program 
+    use states
     use TokenModule
     use ErrorModule
     implicit none
@@ -18,8 +19,8 @@ program main_program
     ! inicializamos el estado
     estado = 0
     buffer_ = ""
-    linea = 0
-    columna = 0
+    linea = 1
+    columna = 1
     ios = 0
     line_length = 0
 
@@ -39,8 +40,10 @@ program main_program
             ! print *, "linea: ", line(i:i)
             if (estado == 0) then 
                 ! estado 0 
+                call state0(line(i:i), buffer_, tokens, errors, linea, columna, estado, line_length == i)
             else if (estado == 1) then 
                 ! estado 1
+                call state1(line(i:i), buffer_, tokens, errors, linea, columna, estado, i)
             else if (estado == 2) then
                 ! estado 2
             else if (estado == 3) then
@@ -58,5 +61,8 @@ program main_program
         end do
         linea = linea + 1
     end do
+
+    ! cerramos el archivo
+    close(10)
 
 end program main_program

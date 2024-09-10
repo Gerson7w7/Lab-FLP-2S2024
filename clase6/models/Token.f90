@@ -33,7 +33,8 @@ module TokenModule
     subroutine addToken(tokens, buffer_, tipo, linea, columna)
         implicit none 
         type(Token), allocatable, intent(inout) :: tokens(:)
-        character(len=*), intent(inout) :: buffer_, tipo
+        character(len=*), intent(inout) :: buffer_
+        character(len=*), intent(in) :: tipo
         integer, intent(in) :: linea, columna
         type(Token) :: t
         integer :: n
