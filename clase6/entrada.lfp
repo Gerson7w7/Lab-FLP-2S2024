@@ -14,7 +14,7 @@ InsertarUnico collection = nueva InsertarUnico("dbEjemplo",
         "nombre":"Obra Literaria",
         "autor":"Jorge Luis",
         "edad": 50
-    } @
+    } @  
 );
 
 /*

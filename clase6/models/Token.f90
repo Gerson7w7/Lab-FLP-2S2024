@@ -1,7 +1,8 @@
-module TokenModule 
+module TokenModule
+    use Utils
     implicit none
 
-    ! Definimos el tipo Token
+    ! Definición del tipo Token
     type :: Token
         character(len=100) :: lexema
         character(len=100) :: tipo
@@ -9,40 +10,45 @@ module TokenModule
         integer :: columna
     end type Token
 
-    contains 
-    
-    subroutine initToken(buffer_, tipo, linea, columna, t)
+contains
+
+    ! Subrutina para inicializar un Token
+     subroutine initToken(buffer_, tipo, linea, columna, t)
         implicit none
-        character(len=*), intent(in) :: buffer_, tipo
-        integer, intent(in) :: linea, columna
+        character(len=*), intent(in) :: buffer_
+        character(len=*), intent(in) :: tipo
+        integer, intent(in) :: linea
+        integer, intent(in) :: columna
         type(Token), intent(inout) :: t
 
-        ! limpiar el token
-        t%lexema = ""
-        t%tipo = ""
+        ! limpia el token
+        t%lexema = ''
+        t%tipo = ''
         t%linea = 0
         t%columna = 0
 
-        ! asignar valores al token
+        ! inicializa el token asegurándose de que no se concatenen caracteres no deseados
         t%lexema = trim(buffer_)
         t%tipo = trim(tipo)
         t%linea = linea
         t%columna = columna
     end subroutine initToken
 
+
+    ! Subrutina para añadir un Token a un array de Tokens
     subroutine addToken(tokens, buffer_, tipo, linea, columna)
-        implicit none 
+        implicit none
         type(Token), allocatable, intent(inout) :: tokens(:)
-        character(len=*), intent(inout) :: buffer_
+        character(len=100), intent(inout) :: buffer_
         character(len=*), intent(in) :: tipo
-        integer, intent(in) :: linea, columna
+        integer, intent(in) :: linea
+        integer, intent(in) :: columna
         type(Token) :: t
         integer :: n
-
-        ! inicializamos el token
+    
         call initToken(buffer_, tipo, linea, columna, t)
-
-        ! añadir el token al array
+        
+        ! Añadimos el token al array, extendiendo el array de tokens
         if (allocated(tokens)) then
             n = size(tokens)
             call extendArray(tokens)
@@ -50,9 +56,10 @@ module TokenModule
             allocate(tokens(1))
             n = 0
         end if
-
-        ! añadir el token al array
         tokens(n+1) = t
+        
+        ! Limpiamos el buffer_
+        call clearBuffer(buffer_)
     end subroutine addToken
 
     subroutine extendArray(tokens)
@@ -61,12 +68,24 @@ module TokenModule
         type(Token), allocatable :: temp(:)
         integer :: n
 
-        ! extender el array
         n = size(tokens)
-        allocate(temp(n+1))
+        allocate(temp(n + 1))
         temp(1:n) = tokens
         deallocate(tokens)
         tokens = temp
     end subroutine extendArray
+
+    subroutine pop(tokens)
+        implicit none
+        type(Token), allocatable, intent(inout) :: tokens(:)
+        type(Token), allocatable :: temp(:)
+        integer :: n
+
+        n = size(tokens)
+        allocate(temp(n - 1))
+        temp = tokens(2:n)
+        deallocate(tokens)
+        tokens = temp
+    end subroutine pop
 
 end module TokenModule

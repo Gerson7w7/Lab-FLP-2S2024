@@ -1,19 +1,89 @@
 module Utils 
-contains 
+contains
+    ! read file
+    subroutine readFile(file, lines)
+    implicit none
+        character(len=100), intent(in) :: file
+        character(len=100), intent(out) :: lines(:)
+        integer :: ios
+        integer :: i
+        character(len=100) :: line
+        open(unit=10, file=file, status='old')
+        do
+            read(10, '(A)', iostat=ios) line
+            if (ios /= 0) exit
+            lines = [lines, line]
+        end do
+        close(10)
+    end subroutine readFile
 
-    ! Añade un caracter al buffer_
+    ! añade un caracter al buffer
     subroutine addtoBuffer(current_char, buffer_, column)
-        implicit none
+    implicit none
         character(len=1), intent(in) :: current_char
         character(len=100), intent(inout) :: buffer_
         integer, intent(inout) :: column
-
-        ! añadir el caracter al buffer_
         buffer_ = trim(buffer_) // current_char
         column = column + 1
     end subroutine addtoBuffer
 
-    ! Verifica si un caracter es especial
+    ! validar palabra reservada
+    function isReservedWord(buffer) result(reserved)
+    implicit none
+        character(len=*), intent(in) :: buffer
+        character(len=10) :: reserved
+
+        if (buffer == 'CrearBD' .or. buffer == 'nueva' .or. buffer == 'CrearColeccion' .or. &
+            buffer == 'InsertarUnico' .or. buffer == 'EliminarBD') then
+            reserved = 'RESERVADA'
+        else
+            reserved = 'IDENTIFICADOR'
+        end if
+    end function isReservedWord
+
+    ! salto de linea
+    subroutine newLine(linea, columna)
+    implicit none
+        integer, intent(inout) :: linea
+        integer, intent(inout) :: columna
+        linea = linea + 1
+        columna = 1
+    end subroutine newLine
+
+    ! limpiar buffer
+    subroutine clearBuffer(buffer)
+    implicit none
+        character(len=100), intent(inout) :: buffer
+        buffer = ''
+    end subroutine clearBuffer
+
+    ! ir a un estado en específico
+    subroutine iraState(estado, next_state)
+    implicit none
+        integer, intent(inout) :: estado
+        integer, intent(in) :: next_state
+        estado = next_state       
+    end subroutine iraState
+
+    ! retroceder una posición
+    subroutine goBack(i, columna, buffer_)
+        implicit none
+        integer, intent(inout) :: i
+        integer, intent(inout) :: columna
+        character(len=100), intent(inout) :: buffer_
+        integer :: actual_length
+
+        i = i - 1
+        columna = columna - 1
+
+        ! Obtén la longitud real del contenido de buffer_ sin los espacios en blanco finales
+        actual_length = len_trim(buffer_)
+        if (actual_length > 0) then
+            buffer_ = buffer_(:actual_length-1)
+        endif
+    end subroutine goBack
+
+    ! saber si un caracter es especial
     function isSpecialChar(current_char) result(special)
         implicit none
         character(len=1), intent(in) :: current_char
@@ -21,73 +91,11 @@ contains
 
         if (current_char == ' ' .or. current_char == '\t' .or. &
             current_char == '\r' .or. current_char == '\f' .or. &
-            current_char == '\0') then 
+            current_char == '\0') then
             special = .true.
         else
             special = .false.
         end if
     end function isSpecialChar
-
-    ! Limpia el buffer_
-    subroutine clearBuffer(buffer_)
-        implicit none
-        character(len=100), intent(inout) :: buffer_
-
-        ! limpiar el buffer_
-        buffer_ = ""
-    end subroutine clearBuffer
-
-    ! Cambia el estado
-    subroutine iraState(estado, next_state)
-        implicit none
-        integer, intent(inout) :: estado
-        integer, intent(in) :: next_state
-
-        ! cambiar el estado
-        estado = next_state
-    end subroutine iraState
-
-    ! Salto de linea 
-    subroutine newLine(linea, columna)
-        implicit none
-        integer, intent(inout) :: linea, columna
-
-        ! cambiar la linea y la columna
-        linea = linea + 1
-        columna = 1
-    end subroutine newLine
-
-    ! retroceder un caracter 
-    subroutine goBack(i, columna, buffer_)
-        implicit none
-        integer, intent(inout) :: i, columna
-        character(len=100), intent(inout) :: buffer_
-        integer :: actual_length
-
-        i = i - 1
-        columna = columna - 1
-
-        ! obtener la longitud actual del buffer_
-        actual_length = len_trim(buffer_)
-        if (actual_length > 0) then 
-            buffer_ = buffer_(:actual_length-1)
-        end if
-    end subroutine goBack
-
-    ! Verifica si una palabra es reservada
-    function isReservedWord(buffer_) result(reserved)
-        implicit none
-        character(len=*), intent(in) :: buffer_
-        character(len=10) :: reserved
-
-        ! verificar si es una palabra reservada
-        if (buffer_ == "CrearDB" .or. buffer_ == "nueva" .or. &
-            buffer_ == "CrearColeccion" .or. buffer_ == "InsertarUnico" .or. &
-            buffer_ == "EliminarDB") then 
-            reserved = "RESERVADA"
-        else
-            reserved = "IDENTIFICADOR"
-        end if
-    end function isReservedWord
 
 end module Utils

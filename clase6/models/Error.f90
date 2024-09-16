@@ -1,7 +1,8 @@
-module ErrorModule 
+module ErrorModule
+    use Utils
     implicit none
 
-    ! Definimos el tipo Error
+    ! Definición del tipo Error
     type :: Error
         character(len=100) :: mensaje
         character(len=100) :: tipo
@@ -9,40 +10,45 @@ module ErrorModule
         integer :: columna
     end type Error
 
-    contains 
-    
+contains
+
+    ! Subrutina para inicializar un Error
     subroutine initError(mensaje, tipo, linea, columna, e)
         implicit none
-        character(len=*), intent(in) :: mensaje, tipo
-        integer, intent(in) :: linea, columna
-        type(Error), intent(inout) :: e
+        character(len=*), intent(in) :: mensaje
+        character(len=*), intent(in) :: tipo
+        integer, intent(in) :: linea
+        integer, intent(in) :: columna
+        type(Error), intent(out) :: e
 
-        ! limpiar el error
-        e%mensaje = ""
-        e%tipo = ""
+        ! limpia el error
+        e%mensaje = ''
+        e%tipo = ''
         e%linea = 0
         e%columna = 0
-
-        ! asignar valores al error
+        
         e%mensaje = trim(mensaje)
         e%tipo = trim(tipo)
         e%linea = linea
         e%columna = columna
     end subroutine initError
 
+    ! Subrutina para añadir un Error a un array de Errors
     subroutine addError(errors, mensaje, buffer_, tipo, linea, columna)
-        implicit none 
+        implicit none
         type(Error), allocatable, intent(inout) :: errors(:)
-        character(len=*), intent(inout) :: buffer_ 
-        character(len=*), intent(in) :: tipo, mensaje
-        integer, intent(in) :: linea, columna
+        ! mensaje de longitud variable
+        character(len=*), intent(in) :: mensaje
+        character(len=*), intent(inout) :: buffer_
+        character(len=*), intent(in) :: tipo
+        integer, intent(in) :: linea
+        integer, intent(in) :: columna
         type(Error) :: e
         integer :: n
-
-        ! inicializamos el error
+        
         call initError(mensaje, tipo, linea, columna, e)
-
-        ! añadir el error al array
+        
+        ! Añadimos el error al array, extendiendo el array de errores
         if (allocated(errors)) then
             n = size(errors)
             call extendArray(errors)
@@ -50,20 +56,21 @@ module ErrorModule
             allocate(errors(1))
             n = 0
         end if
-
-        ! añadir el errors al array
         errors(n+1) = e
+
+        ! Limpiamos el buffer_
+        call clearBuffer(buffer_)
     end subroutine addError
 
+    ! Subrutina para extender un array de errores
     subroutine extendArray(errors)
         implicit none
         type(Error), allocatable, intent(inout) :: errors(:)
         type(Error), allocatable :: temp(:)
-        integer :: n
-
-        ! extender el array
+        integer :: n, i
+        
         n = size(errors)
-        allocate(temp(n+1))
+        allocate(temp(n + 1))
         temp(1:n) = errors
         deallocate(errors)
         errors = temp
