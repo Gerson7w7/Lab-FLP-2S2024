@@ -1,0 +1,51 @@
+EJEMPLO 1:
+cadena: aaabbb
+PILA: Z # Fin de la cadena representada por Z
+================
+PILA: Z->1 (Push)
+cadena: aabbb
+================
+PILA: Z->1->1 (Push)
+cadena: abbb
+===============
+PILA: Z->1->1->1 (Push)
+cadena: bbb
+===============
+PILA: Z->1->1 (Pop)
+cadena: bb
+===============
+PILA: Z->1 (Pop)
+cadena: b
+===============
+PILA: Z (Pop)
+cadena:
+===============
+PILA: (Pop)
+cadena:
+CONCLUSIÓN: Cadena aceptada
+
+======================================================
+EJEMPLO 2:
+cadena: aaabb
+PILA: Z # Fin de la cadena representada por Z
+================
+PILA: Z->1 (Push)
+cadena: aabb
+================
+PILA: Z->1->1 (Push)
+cadena: abb
+================
+PILA: Z->1->1->1 (Push)
+cadena: bb
+================
+PILA: Z->1->1 (Pop)
+cadena: b
+================
+PILA: Z->1 (Pop)
+cadena:
+ERROR (No existe transición que cumpla con la cadena y pila)
+CONCLUSIÓN: Se puede decir entonces, que si la pila no queda vacía
+y la cadena se ha terminado, NO es aceptada dicha cadena.
+
+Por otro lado, si la pila queda vacía y la cadena aún no ha terminado
+tampoco es aceptada.
